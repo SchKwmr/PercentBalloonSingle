@@ -2,6 +2,24 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	initGame();	
+	ofBackground(188, 226, 232);
+
+	sound.load("balloon_pop.mp3");
+}
+
+void ofApp::setupGUI() {
+	channel.set("channel", 0, 0, 4);
+	percent_answered.set("answered percent", 50, 0, 100);
+	percent_true.set("true percent", 100, 0, 100);
+
+	gui.setup();
+	gui.add(channel);
+	gui.add(percent_answered);
+	gui.add(percent_true);
+}
+
+void ofApp::initGame() {
 
 	for (int i = 0; i < balloonVisualInfo.size(); i++)
 	{
@@ -13,34 +31,99 @@ void ofApp::setup(){
 			ofRandom(50, 255)
 		);
 	}
-	
-	ofBackground(188, 226, 232);
-}
-
-void ofApp::setupGUI() {
-	percent_answered.set("answered percent", 50, 0, 100);
-	percent_true.set("true percent", 100, 0, 100);
-	percent_life.set("life", 100, 0, 100);
-
-	gui.setup();
-	gui.add(percent_answered);
-	gui.add(percent_true);
-	gui.add(percent_life);
+	percent_life = MAX_LIFE;
+	percent_life_visual = MAX_LIFE;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	if (percent_life == percent_life_visual) {
+		timef_balloon_destroy_interval = MAX_INTERVAL;
+	}
+	if (percent_life_visual > percent_life) {
+		if (ofGetElapsedTimef() - timef_balloon_last_destory > timef_balloon_destroy_interval) {			
+			percent_life_visual--;
+			sound.play();
+			timef_balloon_last_destory = ofGetElapsedTimef();
 
+			timef_balloon_destroy_interval -= INT_VELOCITY;
+			if (timef_balloon_destroy_interval < MIN_INTERVAL) timef_balloon_destroy_interval = MIN_INTERVAL;
+
+			cout << "[GAME SYSTEM] balloon update:" << "percent life visual->" << percent_life_visual << "/ percent life->" << percent_life << endl;
+		}
+	}
+
+	if (percent_life < 0) percent_life = 0;
+	if (percent_life_visual < 0) percent_life_visual = 0;
+}
+
+void ofApp::updateGame()
+{
+	int differential = abs(percent_answered - percent_true);
+	percent_life = percent_life - differential;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	for (int i = 0; i < percent_life; i++)
+	switch (channel)
+	{
+	case 1:
+		drawAllComponent(0, 0,1.0);
+		break;
+
+	case 2:
+		drawAllComponent(0, 0, 1.0);
+		break;
+
+	case 3:
+		drawAllComponent(0, 0, 1.0);
+		break;
+
+	case 4:
+		drawAllComponent(0, 0, 1.0);
+		break;
+
+	default:
+		drawAllComponent(0, 0, 0.5);
+		drawAllComponent(ofGetWidth() * 0.5, 0, 0.5);
+		drawAllComponent(0, ofGetHeight() * 0.5, 0.5);
+		drawAllComponent(ofGetWidth() * 0.5, ofGetHeight() * 0.5, 0.5);
+		break;
+	}	
+}
+
+void ofApp::drawGUI(ofEventArgs& args) {
+	gui.draw();
+}
+
+void ofApp::drawAllComponent(float pos_x, float pos_y, float scale) {
+	ofPushMatrix();
+	ofTranslate(pos_x, pos_y);
+	ofScale(scale, scale);
+	
+	ofPushStyle();
+	ofSetColor(188, 226, 232);
+	ofDrawRectangle(pos_x * (1 / scale), pos_y * (1 / scale), 0, ofGetWidth() * (1 / scale), ofGetHeight() * (1 / scale));
+	ofPopStyle();
+
+	if (scale < 1)
 	{
 		ofPushStyle();
-		drawBalloon(ofGetHeight() * 2.0, ofGetHeight() * balloonVisualInfo[i].x, TWO_PI * balloonVisualInfo[i].y, balloonColors[i]);
+		ofNoFill();
+		ofSetLineWidth(5.0);
+		ofSetColor(255, 0, 0);
+		ofDrawRectangle(pos_x * (1 / scale), pos_y * (1 / scale), 0, ofGetWidth() * (1 / scale), ofGetHeight() * (1 / scale));
 		ofPopStyle();
-	}	
+	}
+	
+
+	for (int i = 0; i < percent_life_visual; i++)
+	{
+		ofPushStyle();
+		float theta_swing = TWO_PI * 0.0125 * sin(ofGetElapsedTimef() * 0.1 - i * 0.05) + TWO_PI * balloonVisualInfo[i].y;
+		drawBalloon(ofGetHeight() * 2.0, ofGetHeight() * balloonVisualInfo[i].x, theta_swing, balloonColors[i]);
+		ofPopStyle();
+	}
 
 	float y_percent_bar = ofGetHeight() * 0.9;
 	float w_percent_bar = ofGetWidth() * 0.6;
@@ -50,10 +133,7 @@ void ofApp::draw(){
 
 	drawTruePercentBar(y_percent_bar, w_percent_bar, h_percent_bar, percent_true);
 	drawAnsweredPercentBar(y_percent_bar, w_percent_bar, h_percent_bar, percent_answered);
-}
-
-void ofApp::drawGUI(ofEventArgs& args) {
-	gui.draw();
+	ofPopMatrix();
 }
 
 void ofApp::drawTruePercentBar(float pos_y, float width, float height, int percent_true) {
@@ -127,7 +207,21 @@ void ofApp::drawCabin(float pos_cavin_y, float width_cavin, float height_cavin) 
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	switch (key)
+	{
+	case OF_KEY_RETURN:		
+		updateGame();
+		cout << "[GAME SYSTEM] balloon update begin:" << endl;
+		break;
 
+	case OF_KEY_ESC:
+		initGame();
+		cout << "[GAME SYSTEM] game initialized:" << endl;
+		break;
+
+	default:
+		break;
+	}
 }
 
 //--------------------------------------------------------------
