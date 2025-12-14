@@ -2,14 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	percent_answered.set("answered percent", 50, 0, 100);
-	percent_true.set("true percent", 100, 0, 100);
-	percent_life.set("life", 100, 0, 100);
-	
-	gui.setup();
-	gui.add(percent_answered);
-	gui.add(percent_true);
-	gui.add(percent_life);
 
 	for (int i = 0; i < balloonVisualInfo.size(); i++)
 	{
@@ -23,6 +15,17 @@ void ofApp::setup(){
 	}
 	
 	ofBackground(188, 226, 232);
+}
+
+void ofApp::setupGUI() {
+	percent_answered.set("answered percent", 50, 0, 100);
+	percent_true.set("true percent", 100, 0, 100);
+	percent_life.set("life", 100, 0, 100);
+
+	gui.setup();
+	gui.add(percent_answered);
+	gui.add(percent_true);
+	gui.add(percent_life);
 }
 
 //--------------------------------------------------------------
@@ -47,8 +50,9 @@ void ofApp::draw(){
 
 	drawTruePercentBar(y_percent_bar, w_percent_bar, h_percent_bar, percent_true);
 	drawAnsweredPercentBar(y_percent_bar, w_percent_bar, h_percent_bar, percent_answered);
-	
-	
+}
+
+void ofApp::drawGUI(ofEventArgs& args) {
 	gui.draw();
 }
 

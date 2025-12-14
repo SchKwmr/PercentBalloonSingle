@@ -2,14 +2,15 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "ofxOsc.h"
 
 class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
+		void setupGUI();
 		void update();
 		void draw();
+		void drawGUI(ofEventArgs& args);
 
 		void keyPressed(int key);
 		void keyReleased(int key);
