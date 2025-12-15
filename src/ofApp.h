@@ -1,8 +1,10 @@
 #pragma once
 
+#include "AppConstants.h"
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "BalloonView.h"
+#include "BalloonModel.h"
 
 #define MAX_LIFE 100
 #define MAX_INTERVAL 0.5
@@ -15,6 +17,7 @@ class ofApp : public ofBaseApp{
 	public:
 		void setup();
 		void setupGUI();
+		void setupGame();
 		void update();
 		void draw();
 		void drawGUI(ofEventArgs& args);
@@ -31,13 +34,14 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		void initGame();
-		void updateGame();
+		AppConstants appConstants;
 
 		ofxPanel gui;
 		ofParameter<int> channel;
 		ofParameter<int> percent_true;
-		ofParameter<int> percent_answered;
+		ofParameterGroup percent_answered_group;
+		array<ofParameter<int>, NUM_TEAM> percent_answered;
+		ofParameter<bool> answer_go;
 
 		int percent_life;
 		int percent_life_visual;
@@ -47,4 +51,5 @@ class ofApp : public ofBaseApp{
 		ofSoundPlayer sound;
 
 		array<BalloonView, NUM_TEAM> balloonViews;
+		array<BalloonModel, NUM_TEAM> balloonModels;
 };

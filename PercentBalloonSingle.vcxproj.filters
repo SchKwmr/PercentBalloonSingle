@@ -74,6 +74,8 @@
       <Filter>addons\ofxOsc\libs\oscpack\src\osc</Filter>
     </ClCompile>
     <ClCompile Include="src\BalloonView.cpp" />
+    <ClCompile Include="src\BalloonModel.cpp" />
+    <ClCompile Include="src\AppConstants.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -214,6 +216,8 @@
       <Filter>addons\ofxOsc\libs\oscpack\src\osc</Filter>
     </ClInclude>
     <ClInclude Include="src\BalloonView.h" />
+    <ClInclude Include="src\BalloonModel.h" />
+    <ClInclude Include="src\AppConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

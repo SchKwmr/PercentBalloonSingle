@@ -2,68 +2,59 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	initGame();	
+	setupGame();	
 	ofBackground(188, 226, 232);
 
 	sound.load("balloon_pop.mp3");
 
-	for(int i = 0; i < NUM_TEAM; i ++) balloonViews[i].setup(i, MAX_LIFE);
+	for (int i = 0; i < NUM_TEAM; i++) {
+		balloonModels[i].setSound(sound);
+		balloonViews[i].setup(i, MAX_LIFE);
+	}
 }
 
 void ofApp::setupGUI() {
 	channel.set("channel", 0, 0, 4);
-	percent_answered.set("answered percent", 50, 0, 100);
+
+	percent_answered_group.setName("Answers");
 	percent_true.set("true percent", 100, 0, 100);
+	percent_answered[0].set("[RED]TeamA answer", 50, 0, 100);
+	percent_answered[1].set("[BLUE]TeamB answer", 50, 0, 100);
+	percent_answered[2].set("[YELLOW]TeamC answer", 50, 0, 100);
+	percent_answered[3].set("[GREEN]TeamD answer", 50, 0, 100);
+	for (int i = 0; i < NUM_TEAM; i++) percent_answered_group.add(percent_answered[i]);
+	answer_go.set("GO", false);
+	
 
 	gui.setup();
 	gui.add(channel);
-	gui.add(percent_answered);
 	gui.add(percent_true);
+	gui.add(percent_answered_group);	
+	gui.add(answer_go);
 }
 
-void ofApp::initGame() {
-
-	percent_life = MAX_LIFE;
-	percent_life_visual = MAX_LIFE;
+void ofApp::setupGame() {
+	for (int i = 0; i < NUM_TEAM; i++) balloonModels[i].initValue(MAX_LIFE, MAX_INTERVAL);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	if (percent_life == percent_life_visual) {
-		timef_balloon_destroy_interval = MAX_INTERVAL;
-	}
-	if (percent_life_visual > percent_life) {
-		if (ofGetElapsedTimef() - timef_balloon_last_destory > timef_balloon_destroy_interval) {			
-			percent_life_visual--;
-			sound.play();
-			timef_balloon_last_destory = ofGetElapsedTimef();
-
-			timef_balloon_destroy_interval -= INT_VELOCITY;
-			if (timef_balloon_destroy_interval < MIN_INTERVAL) timef_balloon_destroy_interval = MIN_INTERVAL;
-
-			cout << "[GAME SYSTEM] balloon update:" << "percent life visual->" << percent_life_visual << "/ percent life->" << percent_life << endl;
-		}
-	}
-
-	if (percent_life < 0) percent_life = 0;
-	if (percent_life_visual < 0) percent_life_visual = 0;
-
 	for (int i = 0; i < NUM_TEAM; i++) {
-		balloonViews[i].setPercentAnswered(percent_answered);
+		balloonModels[i].updateValue(MAX_INTERVAL, MIN_INTERVAL, INT_VELOCITY);
+		balloonViews[i].setPercentAnswered(percent_answered[i]);
 		balloonViews[i].setPercentTrue(percent_true);
-		balloonViews[i].setPercentLife(percent_life_visual);
+		balloonViews[i].setPercentLife(balloonModels[i].percent_life_visual);
 	}
-	
-}
 
-void ofApp::updateGame()
-{
-	int differential = abs(percent_answered - percent_true);
-	percent_life = percent_life - differential;
+	if (answer_go) {
+		for (int i = 0; i < NUM_TEAM; i++) balloonModels[i].calculateDifferential(percent_answered[i], percent_true);
+		answer_go = false;
+	}	
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	ofHideCursor();
 	switch (channel)
 	{
 	case 1:
@@ -92,26 +83,12 @@ void ofApp::draw(){
 }
 
 void ofApp::drawGUI(ofEventArgs& args) {
+	ofShowCursor();
 	gui.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	switch (key)
-	{
-	case OF_KEY_RETURN:		
-		updateGame();
-		cout << "[GAME SYSTEM] balloon update begin:" << endl;
-		break;
-
-	case OF_KEY_ESC:
-		initGame();
-		cout << "[GAME SYSTEM] game initialized:" << endl;
-		break;
-
-	default:
-		break;
-	}
 }
 
 //--------------------------------------------------------------

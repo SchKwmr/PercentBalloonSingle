@@ -184,6 +184,8 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AppConstants.cpp" />
+    <ClCompile Include="src\BalloonModel.cpp" />
     <ClCompile Include="src\BalloonView.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
@@ -211,6 +213,8 @@
     <ClCompile Include="..\..\..\addons\ofxOsc\libs\oscpack\src\osc\OscTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AppConstants.h" />
+    <ClInclude Include="src\BalloonModel.h" />
     <ClInclude Include="src\BalloonView.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />
