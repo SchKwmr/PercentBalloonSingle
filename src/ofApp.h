@@ -1,13 +1,12 @@
 #pragma once
 
-#include "AppConstants.h"
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "BalloonView.h"
 #include "BalloonModel.h"
 #include "QAView.h"
 
-#define MAX_LIFE 100
+#define MAX_LIFE 150
 #define MAX_INTERVAL 0.5
 #define MIN_INTERVAL 0.03
 #define INT_VELOCITY 0.05
@@ -34,8 +33,6 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-
-		AppConstants appConstants;
 
 		ofxPanel gui;
 		ofParameterGroup qaDisplayGroup;
