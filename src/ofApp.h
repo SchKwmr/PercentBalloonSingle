@@ -6,7 +6,7 @@
 #include "BalloonModel.h"
 #include "QAView.h"
 
-#define MAX_LIFE 100
+#define MAX_LIFE 150
 #define MAX_INTERVAL 0.5
 #define MIN_INTERVAL 0.03
 #define INT_VELOCITY 0.05
