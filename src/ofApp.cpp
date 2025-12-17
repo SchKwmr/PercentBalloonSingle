@@ -9,7 +9,7 @@ void ofApp::setup(){
 }
 
 void ofApp::setupGUI() {
-	questionId.set("question ID", 1, 1, 5);
+	questionId.set("question ID", 0, 0, 4);
 	channel.set("channel", 0, 0, 4);
 
 	showQuestionBoard.set("1.QUESTION", false);
@@ -23,7 +23,7 @@ void ofApp::setupGUI() {
 
 	showAnswerPercent.set("4.SHOW RESULT", false);
 	enablePop.set("5.START POP", false);
-	showAnswerBoard.set("6. SHOW MORE", false);
+	showAnswerBoard.set("6.SHOW MORE", false);
 	enableNextQuestion.set("7.NEXT", false);
 
 	//Setup for game flow
@@ -71,7 +71,7 @@ void ofApp::update(){
 		
 		balloonViews[i].setPercentAnswered(percent_answered[i]);
 		
-		float inputAnswerPercent = (showAnswerPercent) ? percents_true[questionId - 1] : percent_manual;
+		float inputAnswerPercent = (showAnswerPercent) ? percents_true[questionId] : percent_manual;
 		balloonViews[i].setPercentTrue(inputAnswerPercent);
 
 		balloonViews[i].setPercentLife(balloonModels[i].percent_life_visual);		
@@ -79,7 +79,7 @@ void ofApp::update(){
 
 	if (enablePop) {
 		for (int i = 0; i < NUM_TEAM; i++) {
-			balloonModels[i].calculateDifferential(percent_answered[i], percents_true[questionId - 1]);
+			balloonModels[i].calculateDifferential(percent_answered[i], percents_true[questionId]);
 		}
 		showQuestionBoard = false;
 		showAnswerBoard = false;
@@ -89,7 +89,7 @@ void ofApp::update(){
 	if (enableNextQuestion) {
 		showAnswerPercent = false;
 
-		if (questionId <= 5) questionId++;
+		if (questionId < 5) questionId++;
 
 		percent_manual = 100;
 		for (int i = 0; i < NUM_TEAM; i++) percent_answered[i] = 50;
